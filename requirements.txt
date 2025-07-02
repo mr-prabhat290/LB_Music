@@ -11,7 +11,6 @@ blackpink
 deepai
 pytube
 dnspython==2.3.0
-ffmpeg-python
 gitpython
 hachoir
 Faker
@@ -19,6 +18,7 @@ pydub
 pycountry
 heroku3
 motor==3.3.2
+pymongo==3.12.3
 pillow==9.5.0
 psutil
 wget
@@ -28,10 +28,10 @@ pytz
 future==0.18.3
 search_engine_parser
 py-tgcalls==1.2.9
-ntgcalls==1.1.2
+ntqcall==1.1.2
 pykeyboard
 pyshorteners
-pyrofork 
+pyrofork
 python-dotenv
 phonenumbers
 pyyaml==6.0.1
@@ -43,14 +43,12 @@ tgcrypto
 telegraph==2.2.0
 unidecode
 yt-dlp
-#git+https://github.com/joetats/youtube_search@master
-#git+https://github.com/alexmercerind/youtube-search-python@main
-https://github.com/KurimuzonAkuma/pyrogram/archive/v2.1.23.zip
-gtts
-youtube_search
-youtube-search-python
+#Git Repositories
+git+https://github.com/joetats/youtube_search@master
+git+https://github.com/alexmercerind/youtube-search-python@main
+git+https://github.com/Kurizu0nAkuma/pyrogram/archive/v2.1.23.zip
 git+https://github.com/AsmSafone/SafoneAPI
-lexica-api==1.4.7
+lekcca-api==1.4.7
 httpx==0.25.2
 gpytranslate
 openai==0.28.0
