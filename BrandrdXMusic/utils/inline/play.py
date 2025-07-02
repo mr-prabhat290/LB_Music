@@ -68,7 +68,7 @@ def stream_markup_timer(_, vidid, chat_id, played, dur):
         ],
         [
             InlineKeyboardButton(
-                text="⛦ ᴏᴡɴᴇʀ ❥", url=f"https://t.me/ll_VILLAIN_lll"
+                text="⛦ ㅤ◄⏤͟͟͞🎭⃝⃪ ⃪ͥ͢ ᷟ 𝐕꯭⃕𝐈𝐋͓𝐋꯭፝֟𝐀꯭͓𝐈⃕𝐍꯭ ⃪̽ ◡̈⃝🂱𝆺꯭𝅥⎯꯭꯭᪵̽⎯꯭ㅤㅤ ❥", url=f"https://t.me/ll_VILLAIN_lll"
             ),
             InlineKeyboardButton(
                 text="⛦ ᴄʜᴀᴛ ❥", url=f"https://t.me/Dosti_Ki_Duniya_hindi_Chat_Group"
@@ -90,10 +90,10 @@ def stream_markup(_, videoid, chat_id):
         ],
         [
             InlineKeyboardButton(
-                text="⛦ ᴏᴡɴᴇʀ ❥", url=f"https://t.me/Want_To_Know_Me"
+                text="⛦ ㅤ◄⏤͟͟͞🎭⃝⃪ ⃪ͥ͢ ᷟ 𝐕꯭⃕𝐈𝐋͓𝐋꯭፝֟𝐀꯭͓𝐈⃕𝐍꯭ ⃪̽ ◡̈⃝🂱𝆺꯭𝅥⎯꯭꯭᪵̽⎯꯭ ❥", url=f"https://t.me/ll_VILLAIN_lll"
             ),
             InlineKeyboardButton(
-                text="⛦ ᴄʜᴀᴛ ❥", url=f"https://t.me/learningbots79"
+                text="⛦ ᴄʜᴀᴛ ❥", url=f"https://t.me/Dosti_Ki_Duniya_hindi_Chat_Group"
             ),
         ],
         [InlineKeyboardButton(text=_["CLOSE_BUTTON"], callback_data="close")],
