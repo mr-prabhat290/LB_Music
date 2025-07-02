@@ -54,3 +54,4 @@ pornhub-api==0.2.0
 git+https://github.com/AsmSafone/SafoneAPI
 blackpink
 yt-dlp
+telegraph==2.2.0
