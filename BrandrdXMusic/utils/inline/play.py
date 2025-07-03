@@ -68,7 +68,7 @@ def stream_markup_timer(_, vidid, chat_id, played, dur):
         ],
         [
             InlineKeyboardButton(
-                text="⛦ ㅤ◄⏤͟͟͞🎭⃝⃪ ⃪ͥ͢ ᷟ 𝐕꯭⃕𝐈𝐋͓𝐋꯭፝֟𝐀꯭͓𝐈⃕𝐍꯭ ⃪̽ ◡̈⃝🂱𝆺꯭𝅥⎯꯭꯭᪵̽⎯꯭ㅤㅤ ❥", url=f"https://t.me/ll_VILLAIN_lll"
+                text="⛦ 𝙈𝙧 𝑽𝒊𝒍𝒍𝒂𝒊𝒏 ❥", url=f"https://t.me/ll_VILLAIN_lll"
             ),
             InlineKeyboardButton(
                 text="⛦ ᴄʜᴀᴛ ❥", url=f"https://t.me/Dosti_Ki_Duniya_hindi_Chat_Group"
@@ -90,7 +90,7 @@ def stream_markup(_, videoid, chat_id):
         ],
         [
             InlineKeyboardButton(
-                text="⛦ ㅤ◄⏤͟͟͞🎭⃝⃪ ⃪ͥ͢ ᷟ 𝐕꯭⃕𝐈𝐋͓𝐋꯭፝֟𝐀꯭͓𝐈⃕𝐍꯭ ⃪̽ ◡̈⃝🂱𝆺꯭𝅥⎯꯭꯭᪵̽⎯꯭ ❥", url=f"https://t.me/ll_VILLAIN_lll"
+                text="⛦ 𝙈𝙧 𝑽𝒊𝒍𝒍𝒂𝒊𝒏", url=f"https://t.me/ll_VILLAIN_lll"
             ),
             InlineKeyboardButton(
                 text="⛦ ᴄʜᴀᴛ ❥", url=f"https://t.me/Dosti_Ki_Duniya_hindi_Chat_Group"
