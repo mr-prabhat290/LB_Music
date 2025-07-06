@@ -14,8 +14,8 @@ from config import BANNED_USERS
 
 from BrandrdXMusic.plugins.tools.clone import restart_bots
 
-
-
+# ✅ Chatbot import
+from BrandrdXMusic.modules import chatbot  # <- This line ensures chatbot gets loaded
 
 async def init():
     if (
@@ -37,21 +37,27 @@ async def init():
             BANNED_USERS.add(user_id)
     except:
         pass
+
+    # Start all services
     await app.start()
     for all_module in ALL_MODULES:
         importlib.import_module("BrandrdXMusic.plugins" + all_module)
     LOGGER("BrandrdXMusic.plugins").info("Successfully Imported Modules...")
+
     await userbot.start()
     await Hotty.start()
+
+    # Try to stream call (ignore if no active call)
     try:
         await Hotty.stream_call("https://graph.org/file/e999c40cb700e7c684b75.mp4")
     except NoActiveGroupCall:
         LOGGER("BrandrdXMusic").error(
-            "Please turn on the videochat of your log group\channel.\n\nStopping Bot..."
+            "Please turn on the videochat of your log group/channel.\n\nStopping Bot..."
         )
         exit()
     except:
         pass
+
     await Hotty.decorators()
     LOGGER("BrandrdXMusic").info(
         "ᴅʀᴏᴘ ʏᴏᴜʀ ɢɪʀʟꜰʀɪᴇɴᴅ'ꜱ ɴᴜᴍʙᴇʀ ᴀᴛ @ruthlesszone ᴊᴏɪɴ @MusicXpressBot , @Dosti_Ki_Duniya_hindi_Chat_Group ꜰᴏʀ ᴀɴʏ ɪꜱꜱᴜᴇꜱ"
