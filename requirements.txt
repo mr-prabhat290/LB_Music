@@ -56,3 +56,4 @@ blackpink
 yt-dlp
 telegraph==2.2.0
 openai
+aiohttp
