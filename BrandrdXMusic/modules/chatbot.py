@@ -1,34 +1,41 @@
-# Free GPT Proxy Chatbot (No OpenAI Key Required)
+# BrandrdXMusic/modules/chatbot.py
 
+import aiohttp
 from pyrogram import filters
 from pyrogram.types import Message
-import aiohttp
 from BrandrdXMusic import app
-from config import OWNER_ID
 
 GPT_API = "https://chatgpt.apinepdev.workers.dev/?question="
 
-async def get_gpt_reply(text: str) -> str:
+async def gpt_reply(text):
     async with aiohttp.ClientSession() as session:
-        async with session.get(GPT_API + text) as resp:
+        async with session.get(f"{GPT_API}{text}") as resp:
             if resp.status == 200:
-                data = await resp.text()
-                return data.strip()
-            else:
-                return "❌ GPT API down ya slow hai."
+                data = await resp.json()
+                reply = data.get("answer", "").strip()
+                if "t.me/" in reply:
+                    reply = reply.split("🔗")[0].strip()
 
-# Private Chat Handler
+                # ✨ Emoji touch here
+                if reply.endswith("."):
+                    reply += " 😊"
+                elif "?" in reply:
+                    reply += " 🤔"
+                else:
+                    reply += " 😄"
+                return reply
+            return "Kya bolu bhai, GPT so gaya lagta hai 😴"
+
+# DM chatbot
 @app.on_message(filters.private & filters.text & ~filters.command(["start"]))
-async def gpt_private(client, message: Message):
-    user_text = message.text
-    reply = await get_gpt_reply(user_text)
+async def dm_chat(client, message: Message):
+    reply = await gpt_reply(message.text)
     await message.reply_text(reply)
 
-# Group Chat Handler (when bot is replied to)
-@app.on_message(filters.group & filters.reply & filters.text)
-async def gpt_group(client, message: Message):
+# Group chatbot (only if someone replies to bot)
+@app.on_message(filters.group & filters.text & filters.reply)
+async def group_chat(client, message: Message):
     if message.reply_to_message.from_user.id != (await app.get_me()).id:
         return
-    user_text = message.text
-    reply = await get_gpt_reply(user_text)
+    reply = await gpt_reply(message.text)
     await message.reply_text(reply)
