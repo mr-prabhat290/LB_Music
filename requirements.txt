@@ -55,3 +55,4 @@ git+https://github.com/AsmSafone/SafoneAPI
 blackpink
 yt-dlp
 telegraph==2.2.0
+openai
