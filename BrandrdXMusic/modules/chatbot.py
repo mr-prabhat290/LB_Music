@@ -1,59 +1,84 @@
+# BrandrdXMusic/modules/chatbot.py
+
+import aiohttp
 import random
 from pyrogram import filters
 from pyrogram.types import Message
 from BrandrdXMusic import app
-from config import OWNER_ID
-from pyrogram.enums import ChatType
 
-# Memory for last 20 messages per chat
-context_memory = {}
+GPT_API = "https://chatgpt.apinepdev.workers.dev/?question="
 
-# Sample funny + gali responses
-funny_responses = [
-    "Teri GF ko leke bhag gaya 😎",
-    "Bhai tu to full cartoon nikla 🤡",
-    "Abe chup reh, bhauk mat! 🐶",
-    "Tere jaise 4 dekhe hain maine 😂",
-    "Tujhse na ho payega bhai 😏",
-    "Tere liye toh CPU bhi sochta rahe 🤖",
-    "Abe tu hai kaun? Google ka chacha? 😂",
-    "Aunty ke phone se aaye ho kya? 📱",
-    "Tera dimaag offline hai kya bhai? 🧠",
+# Funny savage lines (gali-vibe)
+SAVAGE_LINES = [
+    "Teri gf ko le gaya, ab kya karega? 💃",
+    "Apna mooh dhoke aa pehle 😏",
+    "Aukat se baat kar chomu 😎",
+    "Baklol ho kya tum full? 😂",
+    "Bheja fry ho gaya tera to 😹",
+    "Mujhe sunke tera dimaag hil gaya na? 🤯",
+    "Tu internet ka dard hai bhai 💀",
+    "Logic ki talaash me bhatakta aatma lag raha hai tu 👻",
 ]
 
-# Telegram stickers list (add more if you want)
-stickers = [
-    "CAACAgUAAx0CcRkshwACNWhlQ7P9bLfaMx9H8zvqNV9P0wACogMAArV6CVVsNJ4gDRzzazME",  # random sticker
-    "CAACAgUAAx0CcRkshwACMWRlQ4WuRE60JGM7zBvczExjbAACewEAAmYugFYHhkS0uMQ3JzME",
+# Telegram sticker file_ids (replace with your own if needed)
+STICKERS = [
+    "CAACAgUAAxkBAAEBUn5mYzhqlY7OPZznUCM1nNdqd_j13AACmgEAAhZCAVQzY_Pm7kphqDUE",  # angry emoji
+    "CAACAgUAAxkBAAEBUoFmYzjNjKoQ5HdYbFWWaQnLvXWWPwACcAEAAhZCAVTwKxT8vpgPMjUE",  # funny slap
+    "CAACAgUAAxkBAAEBUoNmYzjfCNq6gQH8TVgFvSOPvVDFjQACWwEAAhZCAVTXqDE_qZhVKjUE",  # thinking
+    "CAACAgUAAxkBAAEBUoVmYzjntoCluLJ5IM9hZn7-5uO3DwACbgEAAhZCAVSV6OSpsLz7ezUE",  # crying meme
 ]
 
-@app.on_message(filters.group & filters.text & ~filters.bot)
-async def chatbot_group(client, message: Message):
-    if message.from_user and message.from_user.id == OWNER_ID:
-        return  # Skip replying to self
+# GPT reply with masala
+async def gpt_reply(text):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(f"{GPT_API}Reply in short, funny Hindi with emoji: {text}") as resp:
+            if resp.status == 200:
+                data = await resp.json()
+                reply = data.get("answer", "").strip()
 
-    chat_id = message.chat.id
-    msg_text = message.text
+                reply = reply.split("🔗")[0].strip()
 
-    # Save last 20 messages per group
-    if chat_id not in context_memory:
-        context_memory[chat_id] = []
-    context_memory[chat_id].append(msg_text)
-    if len(context_memory[chat_id]) > 20:
-        context_memory[chat_id].pop(0)
+                if len(reply) > 200:
+                    reply = reply[:180] + "..."
 
-    # Only reply randomly (e.g., 1 out of 7 messages)
-    if random.randint(1, 7) != 3:
+                # 30% chance: use savage line
+                if random.randint(1, 10) <= 3:
+                    reply = random.choice(SAVAGE_LINES)
+
+                return reply + " 😎"
+            return "Lagta hai GPT ne bhi teri baat ignore kar di 😂"
+
+# 🔹 DM Chat
+@app.on_message(filters.private & filters.text & ~filters.command(["start"]))
+async def dm_chat(client, message: Message):
+    reply = await gpt_reply(message.text)
+    await message.reply_text(reply)
+
+    # 30% chance to send sticker
+    if random.randint(1, 10) <= 3:
+        sticker_id = random.choice(STICKERS)
+        await message.reply_sticker(sticker_id)
+
+# 🔹 Group Chat: Reply to bot or random msg
+@app.on_message(filters.group & filters.text)
+async def group_chat(client, message: Message):
+    bot = await app.get_me()
+    if message.from_user.id == bot.id or message.from_user.is_bot:
         return
 
-    # Build fake context from memory
-    fake_context = "\n".join(context_memory[chat_id][-10:])
-    selected_response = random.choice(funny_responses)
+    # Always reply if message is reply to bot
+    if message.reply_to_message and message.reply_to_message.from_user.id == bot.id:
+        reply = await gpt_reply(message.text)
+        await message.reply_text(reply)
+        if random.randint(1, 10) <= 3:
+            sticker_id = random.choice(STICKERS)
+            await message.reply_sticker(sticker_id)
+        return
 
-    # 20% chance to send a sticker instead of text
-    if random.randint(1, 5) == 2:
-        sticker_id = random.choice(stickers)
-        return await message.reply_sticker(sticker=sticker_id)
-
-    # Else reply normally
-    await message.reply_text(selected_response)
+    # 25% chance to reply randomly
+    if random.randint(1, 10) <= 2:
+        reply = await gpt_reply(message.text)
+        await message.reply_text(reply)
+        if random.randint(1, 10) <= 3:
+            sticker_id = random.choice(STICKERS)
+            await message.reply_sticker(sticker_id)
