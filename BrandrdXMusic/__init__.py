@@ -2,22 +2,21 @@ import glob
 import os
 
 def __list_all_modules():
-    # Get absolute path of the current folder (plugins/)
     plugin_path = os.path.dirname(os.path.abspath(__file__))
 
-    # Collect all Python files in subfolders and root
     mod_paths = glob.glob(f"{plugin_path}/**/*.py", recursive=True)
 
-    all_modules = [
-        (
-            f.replace(plugin_path, "")
-             .replace(os.sep, ".")
-             .lstrip(".")
-             .replace(".py", "")
+    all_modules = []
+    for path in mod_paths:
+        if path.endswith("__init__.py") or not path.endswith(".py"):
+            continue
+        module = (
+            path.replace(plugin_path, "")
+                .lstrip(os.sep)
+                .replace(os.sep, ".")
+                .replace(".py", "")
         )
-        for f in mod_paths
-        if f.endswith(".py") and not f.endswith("__init__.py")
-    ]
+        all_modules.append(module)
 
     return all_modules
 
