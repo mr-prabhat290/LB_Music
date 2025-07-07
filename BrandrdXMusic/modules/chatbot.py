@@ -1,84 +1,53 @@
-# BrandrdXMusic/modules/chatbot.py
+import random import time from pyrogram import filters from pyrogram.types import Message from BrandrdXMusic import app
 
-import aiohttp
-import random
-from pyrogram import filters
-from pyrogram.types import Message
-from BrandrdXMusic import app
+Store last 20 group messages
 
-GPT_API = "https://chatgpt.apinepdev.workers.dev/?question="
+recent_messages = [] LAST_REPLY_TIME = 0
 
-# Funny savage lines (gali-vibe)
-SAVAGE_LINES = [
-    "Teri gf ko le gaya, ab kya karega? 💃",
-    "Apna mooh dhoke aa pehle 😏",
-    "Aukat se baat kar chomu 😎",
-    "Baklol ho kya tum full? 😂",
-    "Bheja fry ho gaya tera to 😹",
-    "Mujhe sunke tera dimaag hil gaya na? 🤯",
-    "Tu internet ka dard hai bhai 💀",
-    "Logic ki talaash me bhatakta aatma lag raha hai tu 👻",
-]
+Fun replies and stickers
 
-# Telegram sticker file_ids (replace with your own if needed)
-STICKERS = [
-    "https://t.me/addstickers/mrincred",  # angry emoji
-    "https://t.me/addstickers/Meme_stickers",  # funny slap
-    "https://t.me/addstickers/Abstract4",  # thinking
-    "https://t.me/addstickers/klikhu",  # crying meme
-]
+funny_lines = [ "teri gf ko le gaya 😏", "sab chup kyu ho bhai 😐", "kya neend aa gayi sabko? 😂", "kisi ko to farak nahi padta 🥲", "admin chup hai, to hum hi kuch bolte hain 😎", "chalo kuch to bolo, warna bhag jaunga 👻", "teri crush ab meri ho gayi 😌" ]
 
-# GPT reply with masala
-async def gpt_reply(text):
-    async with aiohttp.ClientSession() as session:
-        async with session.get(f"{GPT_API}Reply in short, funny Hindi with emoji: {text}") as resp:
-            if resp.status == 200:
-                data = await resp.json()
-                reply = data.get("answer", "").strip()
+funny_stickers = [ "https://t.me/addstickers/mrincred", "https://t.me/addstickers/Meme_stickers" ]
 
-                reply = reply.split("🔗")[0].strip()
+Words to ignore (music commands)
 
-                if len(reply) > 200:
-                    reply = reply[:180] + "..."
+IGNORE_KEYWORDS = ["/play", "/skip", "/pause", "/resume", "/stop", "/end", "/join"]
 
-                # 30% chance: use savage line
-                if random.randint(1, 10) <= 3:
-                    reply = random.choice(SAVAGE_LINES)
+Check if bot should reply
 
-                return reply + " 😎"
-            return "Lagta hai GPT ne bhi teri baat ignore kar di 😂"
+def should_reply(message: Message): global LAST_REPLY_TIME now = time.time()
 
-# 🔹 DM Chat
-@app.on_message(filters.private & filters.text & ~filters.command(["start"]))
-async def dm_chat(client, message: Message):
-    reply = await gpt_reply(message.text)
-    await message.reply_text(reply)
+if message.from_user.is_bot:
+    return False
 
-    # 30% chance to send sticker
-    if random.randint(1, 10) <= 3:
-        sticker_id = random.choice(STICKERS)
-        await message.reply_sticker(sticker_id)
+text = message.text.lower()
+if any(word in text for word in IGNORE_KEYWORDS):
+    return False
 
-# 🔹 Group Chat: Reply to bot or random msg
-@app.on_message(filters.group & filters.text)
-async def group_chat(client, message: Message):
-    bot = await app.get_me()
-    if message.from_user.id == bot.id or message.from_user.is_bot:
-        return
+if message.reply_to_message and message.reply_to_message.from_user.id == app.id:
+    LAST_REPLY_TIME = now
+    return True
 
-    # Always reply if message is reply to bot
-    if message.reply_to_message and message.reply_to_message.from_user.id == bot.id:
-        reply = await gpt_reply(message.text)
-        await message.reply_text(reply)
-        if random.randint(1, 10) <= 3:
-            sticker_id = random.choice(STICKERS)
-            await message.reply_sticker(sticker_id)
-        return
+if now - LAST_REPLY_TIME > 60:
+    LAST_REPLY_TIME = now
+    return True
 
-    # 25% chance to reply randomly
-    if random.randint(1, 10) <= 2:
-        reply = await gpt_reply(message.text)
-        await message.reply_text(reply)
-        if random.randint(1, 10) <= 3:
-            sticker_id = random.choice(STICKERS)
-            await message.reply_sticker(sticker_id)
+if (now - LAST_REPLY_TIME) > 20 and random.randint(1, 10) == 1:
+    LAST_REPLY_TIME = now
+    return True
+
+return False
+
+Chatbot listener
+
+@app.on_message(filters.group & filters.text & ~filters.via_bot) async def chatbot_group(client, message: Message): recent_messages.append(message.text) if len(recent_messages) > 20: recent_messages.pop(0)
+
+if should_reply(message):
+    response = random.choice(funny_lines)
+    await message.reply_text(response)
+
+    # 30% chance to send a sticker too
+    if random.randint(1, 100) <= 30:
+        await message.reply_sticker(random.choice(funny_stickers))
+
