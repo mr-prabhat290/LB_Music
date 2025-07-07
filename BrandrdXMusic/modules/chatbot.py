@@ -1,46 +1,59 @@
-import aiohttp import os import json import random from pyrogram import filters from pyrogram.types import Message from BrandrdXMusic import app
+# BrandrdXMusic/modules/chatbot.py
 
-GPT_API = "https://chatgpt.apinepdev.workers.dev/?question=" MEMORY_FOLDER = "memory" MAX_MEMORY = 20 STICKERS = [ "CAACAgUAAxkBAAEBUn5mYzhqlY7OPZznUCM1nNdqd_j13AACmgEAAhZCAVQzY_Pm7kphqDUE", "CAACAgUAAxkBAAEBUoFmYzjNjKoQ5HdYbFWWaQnLvXWWPwACcAEAAhZCAVTwKxT8vpgPMjUE", "CAACAgUAAxkBAAEBUoNmYzjfCNq6gQH8TVgFvSOPvVDFjQACWwEAAhZCAVTXqDE_qZhVKjUE", "CAACAgUAAxkBAAEBUoVmYzjntoCluLJ5IM9hZn7-5uO3DwACbgEAAhZCAVSV6OSpsLz7ezUE", ] SAVAGE_LINES = [ "Teri gf ko le gaya, ab kya karega? 💃", "Apna mooh dhoke aa pehle 😏", "Aukat se baat kar chomu 😎", "Baklol ho kya tum full? 😂", "Tu internet ka dard hai bhai 💀", ]
+import random
+from pyrogram import filters
+from pyrogram.types import Message
+from BrandrdXMusic import app
+from config import OWNER_ID
 
-Ensure memory folder exists
+# Simple random replies
+REPLIES = [
+    "Teri gf ko leke bhag jaunga 😎",
+    "Kya be? Tere jaise 100 aaye aur gaye 💀",
+    "Acha baccha samjha hai kya mujhe? 😈",
+    "Emoji se darrta hai kya? 😂",
+    "Bas kar bhai, ab rulaega kya 😭",
+    "Tera logic NASA wale bhi na samjhe 😵",
+    "Mujhe trigger mat kar, warna AI hoon bhai 🤖",
+    "Tere jaisa chat main 10 handle karta hoon daily 😏",
+    "Thoda respect dede, Innocent Aatma hoon 🧘",
+    "Bhai tu serious hai ya joke kar rha? 🙄",
+]
 
-os.makedirs(MEMORY_FOLDER, exist_ok=True)
+# Telegram sticker file_ids
+STICKERS = [
+    "CAACAgUAAxkBAAEEfS1lkg1OUxT3lW2HwO5muRIT3l74uwAC5QMAAqbCkFbY5js4NNTmVCkE",
+    "CAACAgUAAxkBAAEEfS9lkg3t3Erzbo2WDx2TTZ1VwS5k-AACpAEAAkb7kFcph5pwKaxFGSkE",
+    "CAACAgUAAxkBAAEEfS5lkg3ulN5Hmeog9jOf2cNohkOqOwACuQADVp29CkUmwTXUIGezKQQ",
+]
 
-Save recent group messages
+# Memory context per group
+GROUP_MEMORY = {}
 
-def save_message(chat_id, user, text): file_path = os.path.join(MEMORY_FOLDER, f"{chat_id}.json") data = [] if os.path.exists(file_path): with open(file_path, "r") as f: data = json.load(f) data.append({"user": user, "text": text}) data = data[-MAX_MEMORY:] with open(file_path, "w") as f: json.dump(data, f)
+@app.on_message(filters.group & ~filters.edited)
+async def chatbot_group(client, message: Message):
+    if message.from_user and message.from_user.id == OWNER_ID:
+        return
 
-Get memory context
+    # Store last 20 messages
+    chat_id = message.chat.id
+    if chat_id not in GROUP_MEMORY:
+        GROUP_MEMORY[chat_id] = []
 
-def get_memory(chat_id): file_path = os.path.join(MEMORY_FOLDER, f"{chat_id}.json") if not os.path.exists(file_path): return "" with open(file_path, "r") as f: data = json.load(f) context = "\n".join([f"{m['user']}: {m['text']}" for m in data]) return context
+    GROUP_MEMORY[chat_id].append(message.text or "")
+    if len(GROUP_MEMORY[chat_id]) > 20:
+        GROUP_MEMORY[chat_id].pop(0)
 
-GPT fetch with memory context
+    # Randomly decide whether to reply
+    if random.randint(1, 5) != 3:  # 20% chance to reply
+        return
 
-async def gpt_reply(context, user_input): prompt = f"Group Chat:\n{context}\nNow reply to: "{user_input}"" async with aiohttp.ClientSession() as session: async with session.get(GPT_API + prompt) as resp: if resp.status == 200: data = await resp.json() reply = data.get("answer", "...").split("🔗")[0].strip() if random.randint(1, 10) <= 3: reply = random.choice(SAVAGE_LINES) return reply + " 😎" return "Lagta hai GPT ne bhi ignore maar diya 😂"
+    # Select random reply
+    reply_text = random.choice(REPLIES)
 
-Handle DM
-
-@app.on_message(filters.private & filters.text & ~filters.command(["start"])) async def private_chat(client, message: Message): reply = await gpt_reply("", message.text) await message.reply_text(reply) if random.randint(1, 10) <= 3: await message.reply_sticker(random.choice(STICKERS))
-
-Handle Group
-
-@app.on_message(filters.group & filters.text) async def group_chat(client, message: Message): bot = await app.get_me() if message.from_user.id == bot.id or message.from_user.is_bot: return
-
-save_message(message.chat.id, message.from_user.first_name, message.text)
-context = get_memory(message.chat.id)
-
-# Always respond if replied
-if message.reply_to_message and message.reply_to_message.from_user.id == bot.id:
-    reply = await gpt_reply(context, message.text)
-    await message.reply_text(reply)
-    if random.randint(1, 10) <= 3:
-        await message.reply_sticker(random.choice(STICKERS))
-    return
-
-# Random reply mode (20% chance)
-if random.randint(1, 10) <= 2:
-    reply = await gpt_reply(context, message.text)
-    await message.reply_text(reply)
-    if random.randint(1, 10) <= 3:
-        await message.reply_sticker(random.choice(STICKERS))
-
+    # Sometimes send sticker instead
+    if random.randint(1, 6) == 4:
+        sticker = random.choice(STICKERS)
+        await message.reply_sticker(sticker)
+    else:
+        await message.reply_text(reply_text)
