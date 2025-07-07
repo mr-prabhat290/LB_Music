@@ -1,59 +1,59 @@
-# BrandrdXMusic/modules/chatbot.py
-
 import random
 from pyrogram import filters
 from pyrogram.types import Message
 from BrandrdXMusic import app
 from config import OWNER_ID
+from pyrogram.enums import ChatType
 
-# Simple random replies
-REPLIES = [
-    "Teri gf ko leke bhag jaunga 😎",
-    "Kya be? Tere jaise 100 aaye aur gaye 💀",
-    "Acha baccha samjha hai kya mujhe? 😈",
-    "Emoji se darrta hai kya? 😂",
-    "Bas kar bhai, ab rulaega kya 😭",
-    "Tera logic NASA wale bhi na samjhe 😵",
-    "Mujhe trigger mat kar, warna AI hoon bhai 🤖",
-    "Tere jaisa chat main 10 handle karta hoon daily 😏",
-    "Thoda respect dede, Innocent Aatma hoon 🧘",
-    "Bhai tu serious hai ya joke kar rha? 🙄",
+# Memory for last 20 messages per chat
+context_memory = {}
+
+# Sample funny + gali responses
+funny_responses = [
+    "Teri GF ko leke bhag gaya 😎",
+    "Bhai tu to full cartoon nikla 🤡",
+    "Abe chup reh, bhauk mat! 🐶",
+    "Tere jaise 4 dekhe hain maine 😂",
+    "Tujhse na ho payega bhai 😏",
+    "Tere liye toh CPU bhi sochta rahe 🤖",
+    "Abe tu hai kaun? Google ka chacha? 😂",
+    "Aunty ke phone se aaye ho kya? 📱",
+    "Tera dimaag offline hai kya bhai? 🧠",
 ]
 
-# Telegram sticker file_ids
-STICKERS = [
-    "CAACAgUAAxkBAAEEfS1lkg1OUxT3lW2HwO5muRIT3l74uwAC5QMAAqbCkFbY5js4NNTmVCkE",
-    "CAACAgUAAxkBAAEEfS9lkg3t3Erzbo2WDx2TTZ1VwS5k-AACpAEAAkb7kFcph5pwKaxFGSkE",
-    "CAACAgUAAxkBAAEEfS5lkg3ulN5Hmeog9jOf2cNohkOqOwACuQADVp29CkUmwTXUIGezKQQ",
+# Telegram stickers list (add more if you want)
+stickers = [
+    "CAACAgUAAx0CcRkshwACNWhlQ7P9bLfaMx9H8zvqNV9P0wACogMAArV6CVVsNJ4gDRzzazME",  # random sticker
+    "CAACAgUAAx0CcRkshwACMWRlQ4WuRE60JGM7zBvczExjbAACewEAAmYugFYHhkS0uMQ3JzME",
 ]
 
-# Memory context per group
-GROUP_MEMORY = {}
-
-@app.on_message(filters.group & ~filters.edited)
+@app.on_message(filters.group & filters.text & ~filters.bot)
 async def chatbot_group(client, message: Message):
     if message.from_user and message.from_user.id == OWNER_ID:
-        return
+        return  # Skip replying to self
 
-    # Store last 20 messages
     chat_id = message.chat.id
-    if chat_id not in GROUP_MEMORY:
-        GROUP_MEMORY[chat_id] = []
+    msg_text = message.text
 
-    GROUP_MEMORY[chat_id].append(message.text or "")
-    if len(GROUP_MEMORY[chat_id]) > 20:
-        GROUP_MEMORY[chat_id].pop(0)
+    # Save last 20 messages per group
+    if chat_id not in context_memory:
+        context_memory[chat_id] = []
+    context_memory[chat_id].append(msg_text)
+    if len(context_memory[chat_id]) > 20:
+        context_memory[chat_id].pop(0)
 
-    # Randomly decide whether to reply
-    if random.randint(1, 5) != 3:  # 20% chance to reply
+    # Only reply randomly (e.g., 1 out of 7 messages)
+    if random.randint(1, 7) != 3:
         return
 
-    # Select random reply
-    reply_text = random.choice(REPLIES)
+    # Build fake context from memory
+    fake_context = "\n".join(context_memory[chat_id][-10:])
+    selected_response = random.choice(funny_responses)
 
-    # Sometimes send sticker instead
-    if random.randint(1, 6) == 4:
-        sticker = random.choice(STICKERS)
-        await message.reply_sticker(sticker)
-    else:
-        await message.reply_text(reply_text)
+    # 20% chance to send a sticker instead of text
+    if random.randint(1, 5) == 2:
+        sticker_id = random.choice(stickers)
+        return await message.reply_sticker(sticker=sticker_id)
+
+    # Else reply normally
+    await message.reply_text(selected_response)
