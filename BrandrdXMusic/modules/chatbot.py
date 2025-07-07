@@ -12,7 +12,7 @@ funny_stickers = [ "https://t.me/addstickers/mrincred", "https://t.me/addsticker
 
 Words to ignore (music commands)
 
-IGNORE_KEYWORDS = ["/play", "/skip", "/pause", "/resume", "/stop", "/end", "/join"]
+IGNORE_KEYWORDS = ["/play", "/skip", "/pause", "/resume", "/update", "/stop", "/end", "/join"]
 
 Check if bot should reply
 
