@@ -1,35 +1,25 @@
-from BrandrdXMusic.core.bot import Hotty
-from BrandrdXMusic.core.dir import dirr
-from BrandrdXMusic.core.git import git
-from BrandrdXMusic.core.userbot import Userbot
-from BrandrdXMusic.misc import dbb, heroku
-from SafoneAPI import SafoneAPI
-from .logging import LOGGER
+import glob
+import os
 
-# Initialize system
-dirr()
-git()
-dbb()
-heroku()
+def __list_all_modules():
+    # Get absolute path of the current folder (plugins/)
+    plugin_path = os.path.dirname(os.path.abspath(__file__))
 
-# Start main apps
-app = Hotty()
-userbot = Userbot()
-api = SafoneAPI()
+    # Collect all Python files in subfolders and root
+    mod_paths = glob.glob(f"{plugin_path}/**/*.py", recursive=True)
 
-# Load all platforms
-from .platforms import *
+    all_modules = [
+        (
+            f.replace(plugin_path, "")
+             .replace(os.sep, ".")
+             .lstrip(".")
+             .replace(".py", "")
+        )
+        for f in mod_paths
+        if f.endswith(".py") and not f.endswith("__init__.py")
+    ]
 
-Apple = AppleAPI()
-Carbon = CarbonAPI()
-SoundCloud = SoundAPI()
-Spotify = SpotifyAPI()
-Resso = RessoAPI()
-Telegram = TeleAPI()
-YouTube = YouTubeAPI()
+    return all_modules
 
-# Name your app
-APP = "BRANDED_KUDI_BOT"  # Don't change this
-
-# ✅ Import chatbot module to enable ChatGPT AI
-from BrandrdXMusic.modules import chatbot
+ALL_MODULES = sorted(__list_all_modules())
+__all__ = ALL_MODULES + ["ALL_MODULES"]
