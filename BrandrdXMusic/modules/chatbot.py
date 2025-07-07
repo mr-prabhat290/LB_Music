@@ -1,53 +1,24 @@
-import random import time from pyrogram import filters from pyrogram.types import Message from BrandrdXMusic import app
+import random
+import time
+from pyrogram import filters
+from pyrogram.types import Message
+from BrandrdXMusic import app
 
-Store last 20 group messages
+# Some sample funny + intelligent replies
+REPLIES = [
+    "Teri soch se bhi tez hoon 😎",
+    "Pehle khud seekh le, phir mujhse sawaal kar 🤨",
+    "Tere jaise kai aaye aur chale gaye 😂",
+    "Thoda pyaar se baat kar na ❤️",
+    "Mujhe mat chhed, warna tera Google bhi confuse ho jayega 🤖",
+    "Areey bhai, chill maar 😌",
+    "Teri GF ko leke bhaag jaunga 🏃‍♂️💨"
+]
 
-recent_messages = [] LAST_REPLY_TIME = 0
-
-Fun replies and stickers
-
-funny_lines = [ "teri gf ko le gaya 😏", "sab chup kyu ho bhai 😐", "kya neend aa gayi sabko? 😂", "kisi ko to farak nahi padta 🥲", "admin chup hai, to hum hi kuch bolte hain 😎", "chalo kuch to bolo, warna bhag jaunga 👻", "teri crush ab meri ho gayi 😌" ]
-
-funny_stickers = [ "https://t.me/addstickers/mrincred", "https://t.me/addstickers/Meme_stickers" ]
-
-Words to ignore (music commands)
-
-IGNORE_KEYWORDS = ["/play", "/skip", "/pause", "/resume", "/update", "/stop", "/end", "/join"]
-
-Check if bot should reply
-
-def should_reply(message: Message): global LAST_REPLY_TIME now = time.time()
-
-if message.from_user.is_bot:
-    return False
-
-text = message.text.lower()
-if any(word in text for word in IGNORE_KEYWORDS):
-    return False
-
-if message.reply_to_message and message.reply_to_message.from_user.id == app.id:
-    LAST_REPLY_TIME = now
-    return True
-
-if now - LAST_REPLY_TIME > 60:
-    LAST_REPLY_TIME = now
-    return True
-
-if (now - LAST_REPLY_TIME) > 20 and random.randint(1, 10) == 1:
-    LAST_REPLY_TIME = now
-    return True
-
-return False
-
-Chatbot listener
-
-@app.on_message(filters.group & filters.text & ~filters.via_bot) async def chatbot_group(client, message: Message): recent_messages.append(message.text) if len(recent_messages) > 20: recent_messages.pop(0)
-
-if should_reply(message):
-    response = random.choice(funny_lines)
-    await message.reply_text(response)
-
-    # 30% chance to send a sticker too
-    if random.randint(1, 100) <= 30:
-        await message.reply_sticker(random.choice(funny_stickers))
-
+# Reply to group messages occasionally or on reply
+@app.on_message(filters.group & ~filters.edited)
+async def chat_bot(client, message: Message):
+    if message.reply_to_message and message.reply_to_message.from_user and message.reply_to_message.from_user.id == app.me.id:
+        await message.reply_text(random.choice(REPLIES))
+    elif random.randint(1, 5) == 3:  # 1 out of 5 chance to reply randomly
+        await message.reply_text(random.choice(REPLIES))
