@@ -11,25 +11,26 @@ from BrandrdXMusic.plugins import ALL_MODULES
 from BrandrdXMusic.utils.database import get_banned_users, get_gbanned
 from config import BANNED_USERS
 
-# ✅ Optional: Chatbot module auto-load (if chatbot.py is in modules, not plugins)
+# ✅ Optional: Load chatbot module if exists
 try:
     from BrandrdXMusic.modules import chatbot
 except:
-    pass  # Safe ignore if not needed
+    pass  # Chatbot not mandatory
 
 async def init():
-    if (
-        not config.STRING1
-        and not config.STRING2
-        and not config.STRING3
-        and not config.STRING4
-        and not config.STRING5
-    ):
-        LOGGER(__name__).error("Assistant client variables not defined, exiting...")
+    # ✅ Assistant session string check
+    if not any([
+        config.STRING1,
+        config.STRING2,
+        config.STRING3,
+        config.STRING4,
+        config.STRING5
+    ]):
+        LOGGER(__name__).error("❌ No assistant STRING1–5 found. Bot shutting down...")
         exit()
 
+    # ✅ Add banned users
     await sudo()
-
     try:
         users = await get_gbanned()
         for user_id in users:
@@ -38,41 +39,42 @@ async def init():
         for user_id in users:
             BANNED_USERS.add(user_id)
     except Exception as e:
-        LOGGER(__name__).warning(f"Failed to fetch banned users: {e}")
+        LOGGER(__name__).warning(f"❗Error fetching banned users: {e}")
 
-    # ✅ Start bot, plugins, assistant, and call
+    # ✅ Start main bot
     await app.start()
 
-    # ✅ CORRECTED plugin import:
+    # ✅ Import all plugin modules (FIXED)
     for all_module in ALL_MODULES:
         importlib.import_module(f"BrandrdXMusic.plugins.{all_module}")
-    LOGGER("BrandrdXMusic.plugins").info("Successfully Imported Modules...")
+    LOGGER("BrandrdXMusic.plugins").info("✅ All Modules Loaded Successfully.")
 
+    # ✅ Start assistant client (userbot)
     await userbot.start()
+
+    # ✅ Start PyTgCalls (voice/video)
     await Hotty.start()
 
-    # ✅ Attempt to pre-stream a placeholder to warm up call (optional)
+    # ✅ Try dummy stream (optional)
     try:
         await Hotty.stream_call("https://graph.org/file/e999c40cb700e7c684b75.mp4")
     except NoActiveGroupCall:
         LOGGER("BrandrdXMusic").error(
-            "Please turn on the videochat of your log group/channel.\nStopping Bot..."
+            "❌ Group video call not started!\nStart a call in log group and restart bot."
         )
         exit()
     except Exception as e:
-        LOGGER("BrandrdXMusic").warning(f"Stream call error: {e}")
+        LOGGER("BrandrdXMusic").warning(f"Stream setup skipped: {e}")
 
     await Hotty.decorators()
-    LOGGER("BrandrdXMusic").info(
-        "ʙᴏᴛ ɪꜱ ʀᴇᴀᴅʏ! ᴊᴏɪɴ @ruthlesszone & @MusicXpressBot ꜰᴏʀ ᴍᴏʀᴇ ɪɴꜰᴏ"
-    )
 
+    LOGGER("BrandrdXMusic").info("🎧 Music Bot Started. Drop issues at @ruthlesszone")
     await idle()
 
-    # Shutdown gracefully
+    # ✅ Stop cleanly on shutdown
     await app.stop()
     await userbot.stop()
-    LOGGER("BrandrdXMusic").info("Stopping Brandrd Music Bot...")
+    LOGGER("BrandrdXMusic").info("Bot Stopped Cleanly.")
 
 if __name__ == "__main__":
     asyncio.get_event_loop().run_until_complete(init())
