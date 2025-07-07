@@ -22,10 +22,10 @@ SAVAGE_LINES = [
 
 # Telegram sticker file_ids (replace with your own if needed)
 STICKERS = [
-    "CAACAgUAAxkBAAEBUn5mYzhqlY7OPZznUCM1nNdqd_j13AACmgEAAhZCAVQzY_Pm7kphqDUE",  # angry emoji
-    "CAACAgUAAxkBAAEBUoFmYzjNjKoQ5HdYbFWWaQnLvXWWPwACcAEAAhZCAVTwKxT8vpgPMjUE",  # funny slap
-    "CAACAgUAAxkBAAEBUoNmYzjfCNq6gQH8TVgFvSOPvVDFjQACWwEAAhZCAVTXqDE_qZhVKjUE",  # thinking
-    "CAACAgUAAxkBAAEBUoVmYzjntoCluLJ5IM9hZn7-5uO3DwACbgEAAhZCAVSV6OSpsLz7ezUE",  # crying meme
+    "https://t.me/addstickers/ROMMMMMAAANNN_by_fStikBot",  # angry emoji
+    "https://t.me/addstickers/kang_6843180470video_by_Sticker_kang_robot",  # funny slap
+    "https://t.me/addstickers/Abstract4",  # thinking
+    "https://t.me/addstickers/klikhu",  # crying meme
 ]
 
 # GPT reply with masala
