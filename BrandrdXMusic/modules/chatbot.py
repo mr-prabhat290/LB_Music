@@ -1,34 +1,36 @@
 import random
-import time
 from pyrogram import filters
 from pyrogram.types import Message
 from BrandrdXMusic import app
 
-# Witty chatbot replies
+# Masti bhare chatbot replies 😈
 REPLIES = [
-    "Teri GF mere sath hai 🤭",
-    "Main AI hoon, lekin emotions tere se zyada samajhta hoon 😌",
-    "Pehle khud sudhar, fir mujhse baat kar 😎",
-    "Main tere jaisa 100 bana chuka hoon 🤖",
-    "Aise mat dekh, pyaar ho jaayega 😏",
-    "Tere sawaal se zyada mera jawab intelligent hai 😂",
-    "Mujhe tag mat kar, nahi to tere chats leak kar dunga 📤"
+    "Aye bhai, chill 😎",
+    "Teri GF mere pass hai 😏",
+    "Main zyada smart hoon, maan le 😂",
+    "Kya bakwaas kar raha hai tu 🤣",
+    "Apun AI hoon, emotions samajhta hoon 😌",
+    "Tere jaise 100 aaye aur gaye 🤖",
+    "Mujhe chheda toh Google bhi confuse ho jayega 😈"
 ]
 
-# Commands to ignore
-IGNORE_COMMANDS = [
-    "/play", "/pause", "/resume", "/skip", "/stop", "/end",
-    "/vplay", "/shuffle", "/loop", "/update"
-]
+# Yeh commands chatbot ignore karega (music commands ya others)
+IGNORE_PREFIXES = ["/", "!", "."]
 
-@app.on_message(filters.group)  # removed ~filters.edited
+@app.on_message(filters.group)
 async def chatbot_handler(client, message: Message):
-    if message.text and message.text.lower().startswith(tuple(IGNORE_COMMANDS)):
+    if not message.text:
         return
 
+    # 1. Music or other command ignore
+    if message.text.startswith(tuple(IGNORE_PREFIXES)):
+        return
+
+    # 2. If someone replies to bot's message, respond
     if message.reply_to_message and message.reply_to_message.from_user and message.reply_to_message.from_user.id == app.me.id:
         await message.reply_text(random.choice(REPLIES))
+        return
 
-    elif message.text and not message.text.startswith("/"):
-        if random.randint(1, 5) == 3:
-            await message.reply_text(random.choice(REPLIES))
+    # 3. Random replies sometimes
+    if random.randint(1, 5) == 3:
+        await message.reply_text(random.choice(REPLIES))
