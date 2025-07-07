@@ -4,21 +4,34 @@ from pyrogram import filters
 from pyrogram.types import Message
 from BrandrdXMusic import app
 
-# Some sample funny + intelligent replies
+# Funny and witty chatbot replies
 REPLIES = [
-    "Teri soch se bhi tez hoon 😎",
-    "Pehle khud seekh le, phir mujhse sawaal kar 🤨",
-    "Tere jaise kai aaye aur chale gaye 😂",
-    "Thoda pyaar se baat kar na ❤️",
-    "Mujhe mat chhed, warna tera Google bhi confuse ho jayega 🤖",
-    "Areey bhai, chill maar 😌",
-    "Teri GF ko leke bhaag jaunga 🏃‍♂️💨"
+    "Teri GF mere sath hai 🤭",
+    "Main AI hoon, lekin emotions tere se zyada samajhta hoon 😌",
+    "Pehle khud sudhar, fir mujhse baat kar 😎",
+    "Main tere jaisa 100 bana chuka hoon 🤖",
+    "Aise mat dekh, pyaar ho jaayega 😏",
+    "Tere sawaal se zyada mera jawab intelligent hai 😂",
+    "Mujhe tag mat kar, nahi to tere chats leak kar dunga 📤"
 ]
 
-# Reply to group messages occasionally or on reply
+# Music commands and other bot commands to ignore
+IGNORE_COMMANDS = [
+    "/play", "/pause", "/resume", "/skip", "/stop", "/end",
+    "/vplay", "/shuffle", "/loop", "/update"
+]
+
 @app.on_message(filters.group & ~filters.edited)
-async def chat_bot(client, message: Message):
+async def chatbot_handler(client, message: Message):
+    # Ignore music and update commands
+    if message.text and message.text.lower().startswith(tuple(IGNORE_COMMANDS)):
+        return
+
+    # Reply to user if they reply to the bot
     if message.reply_to_message and message.reply_to_message.from_user and message.reply_to_message.from_user.id == app.me.id:
         await message.reply_text(random.choice(REPLIES))
-    elif random.randint(1, 5) == 3:  # 1 out of 5 chance to reply randomly
-        await message.reply_text(random.choice(REPLIES))
+
+    # Random replies to normal chat (not commands)
+    elif message.text and not message.text.startswith("/"):
+        if random.randint(1, 5) == 3:  # 20% chance
+            await message.reply_text(random.choice(REPLIES))
