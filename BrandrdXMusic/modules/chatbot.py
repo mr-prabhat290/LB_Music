@@ -22,8 +22,8 @@ SAVAGE_LINES = [
 
 # Telegram sticker file_ids (replace with your own if needed)
 STICKERS = [
-    "https://t.me/addstickers/ROMMMMMAAANNN_by_fStikBot",  # angry emoji
-    "https://t.me/addstickers/kang_6843180470video_by_Sticker_kang_robot",  # funny slap
+    "https://t.me/addstickers/mrincred",  # angry emoji
+    "https://t.me/addstickers/Meme_stickers",  # funny slap
     "https://t.me/addstickers/Abstract4",  # thinking
     "https://t.me/addstickers/klikhu",  # crying meme
 ]
